@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./src/battleship:/go/src/battleship
+      - ./test/battleship:/go/test/battleship
+    command: go run /go/src/battleship/main.go
+    working_dir: /go
+    ports:
+      - "8383:8383"
