@@ -14,3 +14,6 @@ stop: ## Stop the server
 
 test: ## Tests the API
 	docker-compose run --rm --no-deps api go test -v ./test/... 
+
+lint: ## Use golint to check the code
+	docker-compose run --rm --no-deps api golint ./src/battleship/...
