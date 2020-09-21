@@ -2,14 +2,5 @@ FROM golang:1.15.2
 
 WORKDIR $GOPATH
 
-# Download all the dependencies
-# https://stackoverflow.com/questions/28031603/what-do-three-dots-mean-in-go-command-line-invocations
-RUN go get -d -v github.com/gorilla/mux
-RUN go get -d -v github.com/patrickmn/go-cache
-RUN go get -d -v github.com/lithammer/shortuuid
+# Download dependencies
 RUN go get -u -v golang.org/x/lint/golint
-
-# Install the package
-RUN go install -v github.com/gorilla/mux
-RUN go install -v github.com/patrickmn/go-cache
-RUN go get -d -v github.com/lithammer/shortuuid
