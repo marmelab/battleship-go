@@ -2,15 +2,31 @@ package scoreboard
 
 import "strconv"
 
-func GetStringFromScoreBoard(scoreBoard [][]int) string {
-	res := ""
-	for row := 0; row < len(scoreBoard); row++ {
-		for column := 0; column < len(scoreBoard); column++ {
-			res += strconv.Itoa(scoreBoard[row][column])
+type ScoreBoard struct {
+	Length  int
+	Squares [][]int
+}
 
-			if column < len(scoreBoard)-1 {
+func MakeScoreBoard(size int) ScoreBoard {
+
+	squares := make([][]int, size)
+
+	for i := 0; i < size; i++ {
+		squares[i] = make([]int, size)
+	}
+
+	return ScoreBoard{size, squares}
+}
+
+func GetStringFromScoreBoard(scoreBoard *ScoreBoard) string {
+	res := ""
+	for row := 0; row < len(scoreBoard.Squares); row++ {
+		for column := 0; column < len(scoreBoard.Squares); column++ {
+			res += strconv.Itoa(scoreBoard.Squares[row][column])
+
+			if column < len(scoreBoard.Squares)-1 {
 				res += " "
-			} else if row < len(scoreBoard)-1 {
+			} else if row < len(scoreBoard.Squares)-1 {
 				res += "\n"
 			}
 		}
