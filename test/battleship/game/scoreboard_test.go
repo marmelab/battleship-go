@@ -77,7 +77,7 @@ func TestGetScoreBoardWithTooLongShip(t *testing.T) {
 	displayScoreBoard(actual, ship, grid)
 }
 
-func TestScoreBoardWithObstacle(t *testing.T) {
+func TestGetScoreBoardWithObstacle(t *testing.T) {
 	// Given a grid with a 1 cell long ship on it (the obstacle)
 	// and considering a 2 cells long ship
 	grid, _ := game.NewGrid(3)
