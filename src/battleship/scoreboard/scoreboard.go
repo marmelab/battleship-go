@@ -10,7 +10,6 @@ type ScoreBoard struct {
 
 // NewScoreBoard creates a square board of the given size
 func NewScoreBoard(size int) ScoreBoard {
-
 	cells := make([][]int, size)
 
 	for i := 0; i < size; i++ {

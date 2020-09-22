@@ -8,16 +8,16 @@ import (
 type Grid struct {
 	Size  int
 	Ships []Ship
-	Cells []Coordinates
+	Cells []Cell
 }
 
 // NewGrid create a square grid of the given size
 func NewGrid(gridSize int) (Grid, error) {
-	cells := []Coordinates{}
+	cells := []Cell{}
 
 	for row := 0; row < gridSize; row++ {
 		for column := 0; column < gridSize; column++ {
-			cells = append(cells, Coordinates{row, column})
+			cells = append(cells, Cell{row, column})
 		}
 	}
 
@@ -41,13 +41,15 @@ func GetScoreBoard(grid Grid, ship Ship) (*scoreboard.ScoreBoard, error) {
 	for row := 0; row < grid.Size; row++ {
 		for column := 0; column < grid.Size; column++ {
 
-			if column+ship.Length <= grid.Size {
+			shipCanBePlacedHorizontally := shipCanBePlacedHorizontally(Cell{row, column}, ship, grid)
+			if shipCanBePlacedHorizontally {
 				for l := 0; l < ship.Length; l++ {
 					scoreBoard.Cells[row][column+l]++
 				}
 			}
 
-			if row+ship.Length <= grid.Size {
+			shipCanBePlacedVertically := shipCanBePlacedVertically(Cell{row, column}, ship, grid)
+			if shipCanBePlacedVertically {
 				for l := 0; l < ship.Length; l++ {
 					scoreBoard.Cells[row+l][column]++
 				}
@@ -56,4 +58,44 @@ func GetScoreBoard(grid Grid, ship Ship) (*scoreboard.ScoreBoard, error) {
 	}
 
 	return &scoreBoard, nil
+}
+
+func shipCanBePlacedHorizontally(cell Cell, ship Ship, grid Grid) bool {
+	if cell.Column+ship.Length > grid.Size {
+		return false
+	}
+
+	for _, gridShip := range grid.Ships {
+		for _, gridShipCell := range gridShip.Cells {
+			for i := 0; i < ship.Length; i++ {
+				cellToCheck := Cell{cell.Row, cell.Column + i}
+				if cellToCheck == gridShipCell {
+					return false
+				}
+			}
+
+		}
+	}
+
+	return true
+}
+
+func shipCanBePlacedVertically(cell Cell, ship Ship, grid Grid) bool {
+	if cell.Row+ship.Length > grid.Size {
+		return false
+	}
+
+	for _, gridShip := range grid.Ships {
+		for _, gridShipCell := range gridShip.Cells {
+			for i := 0; i < ship.Length; i++ {
+				cellToCheck := Cell{cell.Row + i, cell.Column}
+				if cellToCheck == gridShipCell {
+					return false
+				}
+			}
+
+		}
+	}
+
+	return true
 }
