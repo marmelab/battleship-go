@@ -2,7 +2,6 @@ package game
 
 import (
 	"battleship/game"
-	"battleship/grid"
 	"battleship/scoreboard"
 	"fmt"
 	"strconv"
@@ -14,7 +13,9 @@ import (
 
 func TestGetScoreBoardWithOneCellLongShip(t *testing.T) {
 	// Given one 1 cell long ship
+	// on a 3x3 grid
 	ship := game.Ship{1}
+	grid, _ := game.NewGrid(3)
 
 	cells := [][]int{
 		{2, 2, 2},
@@ -25,8 +26,7 @@ func TestGetScoreBoardWithOneCellLongShip(t *testing.T) {
 	expected := &scoreboard.ScoreBoard{3, cells}
 
 	// When computing its possible positions
-	// on a 3x3 grid
-	actual, _ := grid.GetScoreBoard(3, ship) // adresse récupérée
+	actual, _ := game.GetScoreBoard(grid, ship) // adresse récupérée
 
 	// Then it should equals this score board
 	then.AssertThat(t, actual, is.EqualTo(expected).Reason("1 cell long ship on 3x3 grid"))
@@ -36,6 +36,7 @@ func TestGetScoreBoardWithOneCellLongShip(t *testing.T) {
 func TestGetScoreBoardWithTwoCellsLongShip(t *testing.T) {
 	// Given one 2 cells long ship
 	ship := game.Ship{2}
+	grid, _ := game.NewGrid(3)
 
 	cells := [][]int{
 		{2, 3, 2},
@@ -47,7 +48,7 @@ func TestGetScoreBoardWithTwoCellsLongShip(t *testing.T) {
 
 	// When computing its possible positions
 	// on a 3x3 grid
-	actual, _ := grid.GetScoreBoard(3, ship)
+	actual, _ := game.GetScoreBoard(grid, ship)
 
 	// Then it should equals this score board
 	then.AssertThat(t, actual, is.EqualTo(expected).Reason("2 cells long ship on 3x3 grid"))
@@ -56,7 +57,9 @@ func TestGetScoreBoardWithTwoCellsLongShip(t *testing.T) {
 
 func TestGetScoreBoardShouldNotBeComputableWithTooLongShip(t *testing.T) {
 	// Given one 4 cells long ship
+	// on a 3x3 grid
 	ship := game.Ship{4}
+	grid, _ := game.NewGrid(3)
 
 	cells := [][]int{
 		{0, 0, 0},
@@ -67,8 +70,7 @@ func TestGetScoreBoardShouldNotBeComputableWithTooLongShip(t *testing.T) {
 	expected := &scoreboard.ScoreBoard{3, cells}
 
 	// When computing its possible positions
-	// on a 3x3 grid
-	actual, _ := grid.GetScoreBoard(3, ship)
+	actual, _ := game.GetScoreBoard(grid, ship)
 
 	// Then it should not be computed
 	then.AssertThat(t, actual, is.EqualTo(expected).Reason("Too long ship on 3x3 grid"))
