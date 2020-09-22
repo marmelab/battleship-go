@@ -7,20 +7,20 @@ import (
 )
 
 type Grid struct {
-	Size    int
-	Squares []game.Coordinates
+	Size  int
+	Cells []game.Coordinates
 }
 
 func NewGrid(gridSize int) (Grid, error) {
-	squares := []game.Coordinates{}
+	cells := []game.Coordinates{}
 
 	for row := 0; row < gridSize; row++ {
 		for column := 0; column < gridSize; column++ {
-			squares = append(squares, game.Coordinates{row, column})
+			cells = append(cells, game.Coordinates{row, column})
 		}
 	}
 
-	return Grid{gridSize, squares}, nil
+	return Grid{gridSize, cells}, nil
 }
 
 func GetScoreBoard(gridSize int, ship game.Ship) (*scoreboard.ScoreBoard, error) {
@@ -35,13 +35,13 @@ func GetScoreBoard(gridSize int, ship game.Ship) (*scoreboard.ScoreBoard, error)
 
 			if column+ship.Length <= gridSize {
 				for l := 0; l < ship.Length; l++ {
-					scoreBoard.Squares[row][column+l]++
+					scoreBoard.Cells[row][column+l]++
 				}
 			}
 
 			if row+ship.Length <= gridSize {
 				for l := 0; l < ship.Length; l++ {
-					scoreBoard.Squares[row+l][column]++
+					scoreBoard.Cells[row+l][column]++
 				}
 			}
 		}
