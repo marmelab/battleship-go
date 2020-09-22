@@ -3,14 +3,15 @@ package grid
 import (
 	"battleship/game"
 	"battleship/scoreboard"
-	"errors"
 )
 
+// Grid is the board on which the battle ships are positionned
 type Grid struct {
 	Size  int
 	Cells []game.Coordinates
 }
 
+// NewGrid create a square grid of the given size
 func NewGrid(gridSize int) (Grid, error) {
 	cells := []game.Coordinates{}
 
@@ -23,12 +24,13 @@ func NewGrid(gridSize int) (Grid, error) {
 	return Grid{gridSize, cells}, nil
 }
 
+// GetScoreBoard returns the score board of a ship positioned on a grid of the given size
 func GetScoreBoard(gridSize int, ship game.Ship) (*scoreboard.ScoreBoard, error) {
-	if ship.Length > gridSize {
-		return nil, errors.New("The ship is too long. Its length must be inferior to the grid size.")
-	}
+	scoreBoard := scoreboard.NewScoreBoard(gridSize)
 
-	scoreBoard := scoreboard.MakeScoreBoard(gridSize)
+	if ship.Length > gridSize {
+		return &scoreBoard, nil
+	}
 
 	for row := 0; row < gridSize; row++ {
 		for column := 0; column < gridSize; column++ {

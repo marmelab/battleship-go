@@ -30,7 +30,7 @@ func TestGetScoreBoardWithOneCellLongShip(t *testing.T) {
 
 	// Then it should equals this score board
 	then.AssertThat(t, actual, is.EqualTo(expected).Reason("1 cell long ship on 3x3 grid"))
-	DisplayScoreBoard(actual, ship)
+	displayScoreBoard(actual, ship)
 }
 
 func TestGetScoreBoardWithTwoCellsLongShip(t *testing.T) {
@@ -51,23 +51,30 @@ func TestGetScoreBoardWithTwoCellsLongShip(t *testing.T) {
 
 	// Then it should equals this score board
 	then.AssertThat(t, actual, is.EqualTo(expected).Reason("2 cells long ship on 3x3 grid"))
-	DisplayScoreBoard(actual, ship)
+	displayScoreBoard(actual, ship)
 }
 
 func TestGetScoreBoardShouldNotBeComputableWithTooLongShip(t *testing.T) {
 	// Given one 4 cells long ship
 	ship := game.Ship{4}
 
+	cells := [][]int{
+		{0, 0, 0},
+		{0, 0, 0},
+		{0, 0, 0},
+	}
+
+	expected := &scoreboard.ScoreBoard{3, cells}
+
 	// When computing its possible positions
 	// on a 3x3 grid
-	_, error := grid.GetScoreBoard(3, ship)
+	actual, _ := grid.GetScoreBoard(3, ship)
 
-	// Then it should not be computed and return an error
-	if error == nil {
-		t.Error("The ship is too long. Its length must be inferior to the grid size.")
-	}
+	// Then it should not be computed
+	then.AssertThat(t, actual, is.EqualTo(expected).Reason("Too long ship on 3x3 grid"))
+	displayScoreBoard(actual, ship)
 }
 
-func DisplayScoreBoard(scoreBoard *scoreboard.ScoreBoard, ship game.Ship) {
-	fmt.Println(scoreboard.GetStringFromScoreBoard(scoreBoard), "  "+strconv.Itoa(ship.Length)+" long ship on 3x3 grid")
+func displayScoreBoard(scoreBoard *scoreboard.ScoreBoard, ship game.Ship) {
+	fmt.Println(scoreboard.ToString(scoreBoard), "  "+strconv.Itoa(ship.Length)+" long ship on 3x3 grid")
 }
