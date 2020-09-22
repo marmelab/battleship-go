@@ -30,7 +30,7 @@ func TestGetScoreBoardWithOneCellLongShip(t *testing.T) {
 
 	// Then it should equals this score board
 	then.AssertThat(t, actual, is.EqualTo(expected).Reason("1 cell long ship on 3x3 grid"))
-	displayScoreBoard(actual, ship)
+	displayScoreBoard(actual, ship, grid)
 }
 
 func TestGetScoreBoardWithTwoCellsLongShip(t *testing.T) {
@@ -52,7 +52,7 @@ func TestGetScoreBoardWithTwoCellsLongShip(t *testing.T) {
 
 	// Then it should equals this score board
 	then.AssertThat(t, actual, is.EqualTo(expected).Reason("2 cells long ship on 3x3 grid"))
-	displayScoreBoard(actual, ship)
+	displayScoreBoard(actual, ship, grid)
 }
 
 func TestGetScoreBoardWithTooLongShip(t *testing.T) {
@@ -74,7 +74,7 @@ func TestGetScoreBoardWithTooLongShip(t *testing.T) {
 
 	// Then it should not be computed
 	then.AssertThat(t, actual, is.EqualTo(expected).Reason("Too long ship on 3x3 grid"))
-	displayScoreBoard(actual, ship)
+	displayScoreBoard(actual, ship, grid)
 }
 
 func TestScoreBoardWithObstacle(t *testing.T) {
@@ -99,9 +99,15 @@ func TestScoreBoardWithObstacle(t *testing.T) {
 
 	// Then the resulting score board should equals the expected one
 	then.AssertThat(t, actual, is.EqualTo(expected).Reason("There is an obstacle on cell 1:2"))
-	displayScoreBoard(actual, computedShip)
+	displayScoreBoard(actual, computedShip, grid)
 }
 
-func displayScoreBoard(scoreBoard *scoreboard.ScoreBoard, ship game.Ship) {
-	fmt.Println(scoreboard.ToString(scoreBoard), "  "+strconv.Itoa(ship.Length)+" long ship on 3x3 grid")
+func displayScoreBoard(scoreBoard *scoreboard.ScoreBoard, ship game.Ship, grid game.Grid) {
+	message := scoreboard.ToString(scoreBoard)
+	message += "  "
+	message += strconv.Itoa(ship.Length) + " long ship on 3x3 grid"
+	if len(grid.Ships) > 0 {
+		message += " with obstacle"
+	}
+	fmt.Println(message)
 }
