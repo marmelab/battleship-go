@@ -75,9 +75,12 @@ func shipCanBePlacedHorizontally(cell game.Cell, ship game.Ship, grid game.Grid)
 		return false
 	}
 
-	for _, gridShip := range grid.Ships {
-		if game.ShipsOverlapHorizontally(ship, gridShip, cell) {
-			return false
+	for _, shoot := range grid.Shoots {
+		for i := 0; i < ship.Length; i++ {
+			cellToCheck := game.Cell{cell.Row, cell.Column + i}
+			if cellToCheck == shoot {
+				return false
+			}
 		}
 	}
 
@@ -89,9 +92,12 @@ func shipCanBePlacedVertically(cell game.Cell, ship game.Ship, grid game.Grid) b
 		return false
 	}
 
-	for _, gridShip := range grid.Ships {
-		if game.ShipsOverlapVertically(ship, gridShip, cell) {
-			return false
+	for _, shoot := range grid.Shoots {
+		for i := 0; i < ship.Length; i++ {
+			cellToCheck := game.Cell{cell.Row + i, cell.Column}
+			if cellToCheck == shoot {
+				return false
+			}
 		}
 	}
 
