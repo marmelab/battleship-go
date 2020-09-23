@@ -102,7 +102,7 @@ func TestGetScoreBoardWithObstacle(t *testing.T) {
 }
 
 func TestGetScoreBoardWithBiggerGridWithoutObstacle(t *testing.T) {
-	grid, _ := game.NewGrid(10)
+	grid := game.NewGrid(10)
 
 	computedShip := game.Ship{2, []game.Cell{}}
 
@@ -121,14 +121,14 @@ func TestGetScoreBoardWithBiggerGridWithoutObstacle(t *testing.T) {
 
 	expected := &scoreboard.ScoreBoard{10, cells}
 
-	actual, _ := game.GetScoreBoard(grid, computedShip)
+	actual := scoreboard.GetScoreBoard(grid, computedShip)
 
 	then.AssertThat(t, actual, is.EqualTo(expected).Reason("Bigger grid without obstacle"))
 	displayScoreBoard(actual, computedShip, grid)
 }
 
 func TestGetScoreBoardWithBiggerGridAndOneObstacle(t *testing.T) {
-	grid, _ := game.NewGrid(10)
+	grid := game.NewGrid(10)
 	ship := game.Ship{1, []game.Cell{{1, 2}}}
 	grid = game.AddShip(grid, ship)
 
@@ -149,14 +149,14 @@ func TestGetScoreBoardWithBiggerGridAndOneObstacle(t *testing.T) {
 
 	expected := &scoreboard.ScoreBoard{10, cells}
 
-	actual, _ := game.GetScoreBoard(grid, computedShip)
+	actual := scoreboard.GetScoreBoard(grid, computedShip)
 
 	then.AssertThat(t, actual, is.EqualTo(expected).Reason("Bigger grid with one obstacle"))
 	displayScoreBoard(actual, computedShip, grid)
 }
 
 func TestGetScoreBoardWithBiggerGridAndMultipleObstacles(t *testing.T) {
-	grid, _ := game.NewGrid(10)
+	grid := game.NewGrid(10)
 	grid = game.AddShip(grid, game.Ship{2, []game.Cell{{1, 2}, {1, 3}}})
 	grid = game.AddShip(grid, game.Ship{3, []game.Cell{{3, 2}, {4, 2}, {5, 2}}})
 	grid = game.AddShip(grid, game.Ship{3, []game.Cell{{5, 6}, {6, 6}, {7, 6}, {8, 6}, {9, 6}}})
@@ -178,7 +178,7 @@ func TestGetScoreBoardWithBiggerGridAndMultipleObstacles(t *testing.T) {
 
 	expected := &scoreboard.ScoreBoard{10, cells}
 
-	actual, _ := game.GetScoreBoard(grid, computedShip)
+	actual := scoreboard.GetScoreBoard(grid, computedShip)
 
 	then.AssertThat(t, actual, is.EqualTo(expected).Reason("Bigger grid with multiple obstacles"))
 	displayScoreBoard(actual, computedShip, grid)
