@@ -2,7 +2,6 @@ package game
 
 import (
 	"battleship/game"
-	"battleship/grid"
 	"battleship/scoreboard"
 	"fmt"
 	"strconv"
@@ -14,7 +13,9 @@ import (
 
 func TestGetScoreBoardWithOneCellLongShip(t *testing.T) {
 	// Given one 1 cell long ship
-	ship := game.Ship{1}
+	// on a 3x3 grid
+	ship := game.Ship{1, []game.Cell{}}
+	grid := game.NewGrid(3)
 
 	cells := [][]int{
 		{2, 2, 2},
@@ -25,17 +26,17 @@ func TestGetScoreBoardWithOneCellLongShip(t *testing.T) {
 	expected := &scoreboard.ScoreBoard{3, cells}
 
 	// When computing its possible positions
-	// on a 3x3 grid
-	actual, _ := grid.GetScoreBoard(3, ship) // adresse récupérée
+	actual := scoreboard.GetScoreBoard(grid, ship) // adresse récupérée
 
 	// Then it should equals this score board
 	then.AssertThat(t, actual, is.EqualTo(expected).Reason("1 cell long ship on 3x3 grid"))
-	displayScoreBoard(actual, ship)
+	displayScoreBoard(actual, ship, grid)
 }
 
 func TestGetScoreBoardWithTwoCellsLongShip(t *testing.T) {
 	// Given one 2 cells long ship
-	ship := game.Ship{2}
+	ship := game.Ship{2, []game.Cell{}}
+	grid := game.NewGrid(3)
 
 	cells := [][]int{
 		{2, 3, 2},
@@ -47,16 +48,18 @@ func TestGetScoreBoardWithTwoCellsLongShip(t *testing.T) {
 
 	// When computing its possible positions
 	// on a 3x3 grid
-	actual, _ := grid.GetScoreBoard(3, ship)
+	actual := scoreboard.GetScoreBoard(grid, ship)
 
 	// Then it should equals this score board
 	then.AssertThat(t, actual, is.EqualTo(expected).Reason("2 cells long ship on 3x3 grid"))
-	displayScoreBoard(actual, ship)
+	displayScoreBoard(actual, ship, grid)
 }
 
-func TestGetScoreBoardShouldNotBeComputableWithTooLongShip(t *testing.T) {
+func TestGetScoreBoardWithTooLongShip(t *testing.T) {
 	// Given one 4 cells long ship
-	ship := game.Ship{4}
+	// on a 3x3 grid
+	ship := game.Ship{4, []game.Cell{}}
+	grid := game.NewGrid(3)
 
 	cells := [][]int{
 		{0, 0, 0},
@@ -67,14 +70,44 @@ func TestGetScoreBoardShouldNotBeComputableWithTooLongShip(t *testing.T) {
 	expected := &scoreboard.ScoreBoard{3, cells}
 
 	// When computing its possible positions
-	// on a 3x3 grid
-	actual, _ := grid.GetScoreBoard(3, ship)
+	actual := scoreboard.GetScoreBoard(grid, ship)
 
 	// Then it should not be computed
 	then.AssertThat(t, actual, is.EqualTo(expected).Reason("Too long ship on 3x3 grid"))
-	displayScoreBoard(actual, ship)
+	displayScoreBoard(actual, ship, grid)
 }
 
-func displayScoreBoard(scoreBoard *scoreboard.ScoreBoard, ship game.Ship) {
-	fmt.Println(scoreboard.ToString(scoreBoard), "  "+strconv.Itoa(ship.Length)+" long ship on 3x3 grid")
+func TestGetScoreBoardWithObstacle(t *testing.T) {
+	// Given a grid with a 1 cell long ship on it (the obstacle)
+	// and considering a 2 cells long ship
+	grid := game.NewGrid(3)
+	ship := game.Ship{1, []game.Cell{{1, 2}}}
+	grid = game.AddShip(grid, ship)
+
+	computedShip := game.Ship{2, []game.Cell{}}
+
+	cells := [][]int{
+		{2, 3, 1},
+		{3, 3, 0},
+		{2, 3, 1},
+	}
+
+	expected := &scoreboard.ScoreBoard{3, cells}
+
+	// When computing possible positions of the second ship
+	actual := scoreboard.GetScoreBoard(grid, computedShip)
+
+	// Then the resulting score board should equals the expected one
+	then.AssertThat(t, actual, is.EqualTo(expected).Reason("There is an obstacle on cell 1:2"))
+	displayScoreBoard(actual, computedShip, grid)
+}
+
+func displayScoreBoard(scoreBoard *scoreboard.ScoreBoard, ship game.Ship, grid game.Grid) {
+	message := scoreboard.ToString(scoreBoard)
+	message += "  "
+	message += strconv.Itoa(ship.Length) + " long ship on 3x3 grid"
+	if len(grid.Ships) > 0 {
+		message += " with obstacle"
+	}
+	fmt.Println(message)
 }
