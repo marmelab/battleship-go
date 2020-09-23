@@ -9,7 +9,7 @@ import (
 )
 
 func TestAddShip(t *testing.T) {
-	grid, _ := game.NewGrid(3)
+	grid := game.NewGrid(3)
 
 	grid = game.AddShip(grid, game.Ship{1, []game.Cell{}})
 

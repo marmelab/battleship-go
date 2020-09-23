@@ -1,6 +1,9 @@
 package scoreboard
 
-import "strconv"
+import (
+	"battleship/game"
+	"strconv"
+)
 
 // ScoreBoard holds the probabilities of finding ships on the cells
 type ScoreBoard struct {
@@ -35,4 +38,62 @@ func ToString(scoreBoard *ScoreBoard) string {
 	}
 
 	return res
+}
+
+// GetScoreBoard returns the score board of a ship positioned on a grid of the given size
+func GetScoreBoard(grid game.Grid, ship game.Ship) *ScoreBoard {
+	scoreBoard := NewScoreBoard(grid.Size)
+
+	if ship.Length > grid.Size {
+		return &scoreBoard
+	}
+
+	for row := 0; row < grid.Size; row++ {
+		for column := 0; column < grid.Size; column++ {
+
+			shipCanBePlacedHorizontally := shipCanBePlacedHorizontally(game.Cell{row, column}, ship, grid)
+			if shipCanBePlacedHorizontally {
+				for l := 0; l < ship.Length; l++ {
+					scoreBoard.Cells[row][column+l]++
+				}
+			}
+
+			shipCanBePlacedVertically := shipCanBePlacedVertically(game.Cell{row, column}, ship, grid)
+			if shipCanBePlacedVertically {
+				for l := 0; l < ship.Length; l++ {
+					scoreBoard.Cells[row+l][column]++
+				}
+			}
+		}
+	}
+
+	return &scoreBoard
+}
+
+func shipCanBePlacedHorizontally(cell game.Cell, ship game.Ship, grid game.Grid) bool {
+	if cell.Column+ship.Length > grid.Size {
+		return false
+	}
+
+	for _, gridShip := range grid.Ships {
+		if game.ShipsOverlapHorizontally(ship, gridShip, cell) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func shipCanBePlacedVertically(cell game.Cell, ship game.Ship, grid game.Grid) bool {
+	if cell.Row+ship.Length > grid.Size {
+		return false
+	}
+
+	for _, gridShip := range grid.Ships {
+		if game.ShipsOverlapVertically(ship, gridShip, cell) {
+			return false
+		}
+	}
+
+	return true
 }
