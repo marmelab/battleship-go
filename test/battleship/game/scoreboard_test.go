@@ -101,12 +101,95 @@ func TestGetScoreBoardWithObstacle(t *testing.T) {
 	displayScoreBoard(actual, ship, grid)
 }
 
+func TestGetScoreBoardWithBiggerGridWithoutObstacle(t *testing.T) {
+	grid := game.NewGrid(10)
+
+	computedShip := game.Ship{2, []game.Cell{}}
+
+	cells := [][]int{
+		{2, 3, 3, 3, 3, 3, 3, 3, 3, 2},
+		{3, 4, 4, 4, 4, 4, 4, 4, 4, 3},
+		{3, 4, 4, 4, 4, 4, 4, 4, 4, 3},
+		{3, 4, 4, 4, 4, 4, 4, 4, 4, 3},
+		{3, 4, 4, 4, 4, 4, 4, 4, 4, 3},
+		{3, 4, 4, 4, 4, 4, 4, 4, 4, 3},
+		{3, 4, 4, 4, 4, 4, 4, 4, 4, 3},
+		{3, 4, 4, 4, 4, 4, 4, 4, 4, 3},
+		{3, 4, 4, 4, 4, 4, 4, 4, 4, 3},
+		{2, 3, 3, 3, 3, 3, 3, 3, 3, 2},
+	}
+
+	expected := &scoreboard.ScoreBoard{10, cells}
+
+	actual := scoreboard.GetScoreBoard(grid, computedShip)
+
+	then.AssertThat(t, actual, is.EqualTo(expected).Reason("Bigger grid without obstacle"))
+	displayScoreBoard(actual, computedShip, grid)
+}
+
+func TestGetScoreBoardWithBiggerGridAndOneObstacle(t *testing.T) {
+	grid := game.NewGrid(10)
+	grid = game.AddShoot(grid, game.Cell{1, 2})
+
+	computedShip := game.Ship{2, []game.Cell{}}
+
+	cells := [][]int{
+		{2, 3, 2, 3, 3, 3, 3, 3, 3, 2},
+		{3, 3, 0, 3, 4, 4, 4, 4, 4, 3},
+		{3, 4, 3, 4, 4, 4, 4, 4, 4, 3},
+		{3, 4, 4, 4, 4, 4, 4, 4, 4, 3},
+		{3, 4, 4, 4, 4, 4, 4, 4, 4, 3},
+		{3, 4, 4, 4, 4, 4, 4, 4, 4, 3},
+		{3, 4, 4, 4, 4, 4, 4, 4, 4, 3},
+		{3, 4, 4, 4, 4, 4, 4, 4, 4, 3},
+		{3, 4, 4, 4, 4, 4, 4, 4, 4, 3},
+		{2, 3, 3, 3, 3, 3, 3, 3, 3, 2},
+	}
+
+	expected := &scoreboard.ScoreBoard{10, cells}
+
+	actual := scoreboard.GetScoreBoard(grid, computedShip)
+
+	then.AssertThat(t, actual, is.EqualTo(expected).Reason("Bigger grid with one obstacle"))
+	displayScoreBoard(actual, computedShip, grid)
+}
+
+func TestGetScoreBoardWithBiggerGridAndMultipleObstacles(t *testing.T) {
+	grid := game.NewGrid(10)
+	grid = game.AddShoot(grid, game.Cell{1, 2})
+	grid = game.AddShoot(grid, game.Cell{5, 6})
+	grid = game.AddShoot(grid, game.Cell{8, 4})
+
+	computedShip := game.Ship{2, []game.Cell{}}
+
+	cells := [][]int{
+		{2, 3, 2, 3, 3, 3, 3, 3, 3, 2},
+		{3, 3, 0, 3, 4, 4, 4, 4, 4, 3},
+		{3, 4, 3, 4, 4, 4, 4, 4, 4, 3},
+		{3, 4, 4, 4, 4, 4, 4, 4, 4, 3},
+		{3, 4, 4, 4, 4, 4, 3, 4, 4, 3},
+		{3, 4, 4, 4, 4, 3, 0, 3, 4, 3},
+		{3, 4, 4, 4, 4, 4, 3, 4, 4, 3},
+		{3, 4, 4, 4, 3, 4, 4, 4, 4, 3},
+		{3, 4, 4, 3, 0, 3, 4, 4, 4, 3},
+		{2, 3, 3, 3, 2, 3, 3, 3, 3, 2},
+	}
+
+	expected := &scoreboard.ScoreBoard{10, cells}
+
+	actual := scoreboard.GetScoreBoard(grid, computedShip)
+
+	then.AssertThat(t, actual, is.EqualTo(expected).Reason("Bigger grid with multiple obstacles"))
+	displayScoreBoard(actual, computedShip, grid)
+}
+
 func displayScoreBoard(scoreBoard *scoreboard.ScoreBoard, ship game.Ship, grid game.Grid) {
 	message := scoreboard.ToString(scoreBoard)
 	message += "  "
-	message += strconv.Itoa(ship.Length) + " long ship on 3x3 grid"
-	if len(grid.Ships) > 0 {
-		message += " with obstacle"
+	message += strconv.Itoa(ship.Length) + " long ship on " + strconv.Itoa(grid.Size) + "x" + strconv.Itoa(grid.Size) + " grid"
+	obstaclesCount := len(grid.Ships)
+	if obstaclesCount > 0 {
+		message += " with " + strconv.Itoa(obstaclesCount) + " obstacle"
 	}
 	fmt.Println(message)
 }
