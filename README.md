@@ -15,3 +15,11 @@ Runs all the tests of the project
 ```
 make test
 ```
+
+## Lint
+
+Runs the go linter
+
+```
+make lint
+```
