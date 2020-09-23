@@ -78,13 +78,12 @@ func TestGetScoreBoardWithTooLongShip(t *testing.T) {
 }
 
 func TestGetScoreBoardWithObstacle(t *testing.T) {
-	// Given a grid with a 1 cell long ship on it (the obstacle)
+	// Given a grid with an obstacle
 	// and considering a 2 cells long ship
 	grid := game.NewGrid(3)
-	ship := game.Ship{1, []game.Cell{{1, 2}}}
-	grid = game.AddShip(grid, ship)
+	grid = game.AddShoot(grid, game.Cell{1, 2})
 
-	computedShip := game.Ship{2, []game.Cell{}}
+	ship := game.Ship{2, []game.Cell{}}
 
 	cells := [][]int{
 		{2, 3, 1},
@@ -94,12 +93,12 @@ func TestGetScoreBoardWithObstacle(t *testing.T) {
 
 	expected := &scoreboard.ScoreBoard{3, cells}
 
-	// When computing possible positions of the second ship
-	actual := scoreboard.GetScoreBoard(grid, computedShip)
+	// When computing possible positions of the ship
+	actual := scoreboard.GetScoreBoard(grid, ship)
 
 	// Then the resulting score board should equals the expected one
 	then.AssertThat(t, actual, is.EqualTo(expected).Reason("There is an obstacle on cell 1:2"))
-	displayScoreBoard(actual, computedShip, grid)
+	displayScoreBoard(actual, ship, grid)
 }
 
 func displayScoreBoard(scoreBoard *scoreboard.ScoreBoard, ship game.Ship, grid game.Grid) {
