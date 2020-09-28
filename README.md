@@ -1,5 +1,7 @@
 # battleship-go
 
+Code moved to [marmelab/battleship-symfony](https://github.com/marmelab/battleship-symfony).
+
 ## Install
 
 Install docker
